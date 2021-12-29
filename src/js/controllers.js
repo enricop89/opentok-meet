@@ -39,6 +39,18 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       enableDtx = false;
     }
 
+    const e2eePassphrase = url.searchParams.get('e2ee');
+    if (e2eePassphrase) {
+      if (typeof OT._.initE2EE === 'function') {
+        console.log('Initializing E2E Encryption');
+        OT._.initE2EE({
+          passphrase: e2eePassphrase,
+        });
+      } else {
+        console.log('Tried to initialize E2E Encryption but OT._.initE2EE was not defined');
+      }
+    }
+
     const facePublisherPropsHD = {
       name: 'face',
       width: '100%',
@@ -158,7 +170,7 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       });
       OT.subscribers.forEach((subscriber) => {
         if (subscriber.stream) {
-          url += ` subscriber streamId: ${subscriber.stream.streamId} 
+          url += ` subscriber streamId: ${subscriber.stream.streamId}
             subscriber stream type: ${subscriber.stream.videoType} subscriber id: ${subscriber.id}`;
         }
       });
