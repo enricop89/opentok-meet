@@ -52,6 +52,15 @@
                       <label title="just use the whiteboard">Whiteboard only<input type="radio" name="roomType" ng-model="roomType" value="whiteboard"><br></label>
                       <label title="just share your screen with the room">Screenshare only<input type="radio" name="roomType" ng-model="roomType" value="screen"><br></label>
                     </div>
+                    <br>
+                    <label for="e2ee">
+                      E2EE
+                    </label>
+                    <input type="checkbox" name="e2ee" id="e2ee" ng-model="e2ee">
+                    <br>
+                    <br>
+                    <input type="text" ng-class="{hidden: !e2ee}" name="e2eePassphrase" value="" ng-model="e2eePassphrase" id="e2eePassphrase" placeholder="Encryption Passphrase">
+
                   </div>
 
                 </div>
