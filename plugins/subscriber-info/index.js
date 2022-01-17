@@ -6,35 +6,36 @@ module.exports = (app, config, redis, ot) => {
   const anvil = new Anvil(config);
 
   app.get('/:room/subscriber/:subscriberId', (req, res) => {
-    const room = req.param('room');
-    const subscriberId = req.param('subscriberId');
+    return;
+    // const room = req.param('room');
+    // const subscriberId = req.param('subscriberId');
 
-    RoomStore.getRoom(room, (err, sessionId, apiKey, secret) => {
-      if (err) {
-        console.error('Error getting room: ', err);
-        res.send({ error: err.message });
-        return;
-      } else if (!apiKey || !secret) {
-        ({ apiKey } = ot);
-        secret = ot.apiSecret;
-      }
+    // RoomStore.getRoom(room, (err, sessionId, apiKey, secret) => {
+    //   if (err) {
+    //     console.error('Error getting room: ', err);
+    //     res.send({ error: err.message });
+    //     return;
+    //   } else if (!apiKey || !secret) {
+    //     ({ apiKey } = ot);
+    //     secret = ot.apiSecret;
+    //   }
 
-      const payload = {
-        apiKey,
-        apiSecret: secret,
-        sessionId,
-        subscriberId,
-      };
+    //   const payload = {
+    //     apiKey,
+    //     apiSecret: secret,
+    //     sessionId,
+    //     subscriberId,
+    //   };
 
-      anvil.getSubscriberInfo(payload, (getErr, info) => {
-        if (getErr) {
-          console.error('Error retrieving subscriber information: ', getErr);
-          res.send({ error: getErr.message });
-          return;
-        }
+    //   anvil.getSubscriberInfo(payload, (getErr, info) => {
+    //     if (getErr) {
+    //       console.error('Error retrieving subscriber information: ', getErr);
+    //       res.send({ error: getErr.message });
+    //       return;
+    //     }
 
-        res.send({ info });
-      });
-    });
+    //     res.send({ info });
+    //   });
+    // });
   });
 };
