@@ -6,6 +6,7 @@ module.exports = (app, config, redis, ot) => {
   const anvil = new Anvil(config);
 
   app.get('/:room/subscriber/:subscriberId', (req, res) => {
+    res.send();
     return;
     // const room = req.param('room');
     // const subscriberId = req.param('subscriberId');
