@@ -35,6 +35,7 @@ if (process.env.REDISTOGO_URL) {
   const rtg = url.parse(process.env.REDISTOGO_URL);
   redisClient = redis.createClient(rtg.port, rtg.hostname);
   redisClient.auth(rtg.auth.split(':')[1]);
+  redisClient.flushall();
 } else if (process.env.REDIS_URL) {
   redisClient = redis.createClient(process.env.REDIS_URL);
 } else {
