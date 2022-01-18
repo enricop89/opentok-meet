@@ -19,12 +19,24 @@ module.exports = (app, config, redis, ot, redirectSSL) => {
 
   app.get(
     '/google/callback',
-    passport.authenticate('google', {
-      failureRedirect: '/login',
-    }),
-    (req, res) => {
-      const redirectUrl = req.session.redirectUrl || '/';
-      res.redirect(redirectUrl);
+    (req, res, next) => {
+      passport.authenticate('google', (err, user) => {
+        if (err) {
+          console.log('err ', err);
+          res.redirect('/login');
+        }
+        if (!user) {
+          return res.redirect('/login');
+        }
+        return req.login(user, (loginErr) => {
+          if (loginErr) {
+            console.log('loginErr', loginErr);
+            return res.redirect('/login');
+          }
+          const redirectUrl = req.session.redirectUrl || '/';
+          return res.redirect(redirectUrl);
+        });
+      })(req, res, next);
     }
   );
 
