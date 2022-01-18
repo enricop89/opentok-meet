@@ -26,6 +26,7 @@ module.exports = (app, config, redis, ot, redirectSSL) => {
           res.redirect('/login');
         }
         if (!user) {
+          console.log('error: no user ');
           return res.redirect('/login');
         }
         return req.login(user, (loginErr) => {
