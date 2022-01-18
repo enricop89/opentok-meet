@@ -20,6 +20,7 @@ module.exports = (app, config, redis, ot, redirectSSL) => {
   app.get(
     '/google/callback',
     (req, res, next) => {
+      console.log('authenticating');
       passport.authenticate('google', (err, user) => {
         if (err) {
           console.log('err ', err);
@@ -29,12 +30,14 @@ module.exports = (app, config, redis, ot, redirectSSL) => {
           console.log('error: no user ');
           return res.redirect('/login');
         }
+        console.log('user ', user);
         return req.login(user, (loginErr) => {
           if (loginErr) {
             console.log('loginErr', loginErr);
             return res.redirect('/login');
           }
           const redirectUrl = req.session.redirectUrl || '/';
+          console.log('login successful, redirecting to ', redirectUrl);
           return res.redirect(redirectUrl);
         });
       })(req, res, next);
