@@ -89,17 +89,21 @@ angular.module('opentok-meet').factory('StatsService', ['$http', '$interval', 'b
 
         // The below is only executed on the first call to getStats
         const widgetId = subscriberStats.subscriber.widgetId;
-        $http.get(`${baseURL + room}/subscriber/${widgetId}`)
-          .then((res) => {
-            if (res && res.data && res.data.info) {
-              currStats.info = res.data.info;
-            } else {
-              console.info('received error response  ', res);
-            }
-          })
-          .catch((getErr) => {
-            console.trace('failed to retrieve susbcriber info ', getErr);
-          });
+
+        // This anvil endpoint is not supported on prod - see OPENTOK-46687 for context
+        if (!OT.properties.apiURL.includes('anvil.opentok.com')) {
+          $http.get(`${baseURL + room}/subscriber/${widgetId}`)
+            .then((res) => {
+              if (res && res.data && res.data.info) {
+                currStats.info = res.data.info;
+              } else {
+                console.info('received error response  ', res);
+              }
+            })
+            .catch((getErr) => {
+              console.trace('failed to retrieve susbcriber info ', getErr);
+            });
+        }
 
         // Listen to internal qos events to figure out the audio and video codecs
         const qosHandler = (qos) => {
