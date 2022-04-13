@@ -1,12 +1,14 @@
 const filterPickerHTML = require('../templates/filter-picker.html');
 require('../css/filter-picker.css');
 const filterous = require('filterous/lib/instaFilters');
+const filterousFilters = require('./filterous-filters');
 
 function FilterPickerDirective() {
   function link(scope, element) {
     let currentPublisher;
     scope.showFilterList = false;
-    scope.filters = ['none', 'brannan', 'xpro2', 'moon', 'nashville', 'lofi', 'helena', '1977'];
+    const nativePublisherFilters = ['BG Blur: Low', 'BG Blur: High'];
+    scope.filters = ['none', ...nativePublisherFilters, ...filterousFilters];
     scope.filterImages = null;
 
     scope.toggleFilterList = () => {
@@ -50,7 +52,32 @@ function FilterPickerDirective() {
       });
     };
 
+    const applyNativeFilter = (filter) => {
+      try {
+        currentPublisher.applyVideoFilter({
+          type: 'backgroundBlur',
+          blurStrength: filter === 'BG Blur: Low' ? 'low' : 'high',
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    const clearNativeFilter = () => {
+      try {
+        currentPublisher.clearVideoFilter();
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
     scope.selectFilter = (f) => {
+      if (nativePublisherFilters.includes(f)) {
+        applyNativeFilter(f);
+      } else if (nativePublisherFilters.includes(scope.filter)) {
+        clearNativeFilter();
+      }
+
       scope.filter = f;
       scope.showFilterList = false;
     };

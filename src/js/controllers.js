@@ -1,3 +1,5 @@
+const filterousFilters = require('./filterous-filters');
+
 angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$window', '$document',
   '$timeout', 'OTSession', 'RoomService', 'baseURL', 'SimulcastService', 'NotificationService',
   function RoomCtrl(
@@ -28,6 +30,7 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       fixedRatio: !$scope.zoomed,
     };
     $scope.filter = 'none';
+    $scope.filterousFilters = filterousFilters;
     $scope.webviewComposerRequestInflight = false;
     $scope.webviewComposerId = null;
     $scope.startingWebviewComposing = false;
