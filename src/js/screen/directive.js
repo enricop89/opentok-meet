@@ -59,7 +59,10 @@ angular.module('opentok-meet').directive('screenShareDialogs', () => ({
     });
 
     $scope.toggleShareScreen = () => {
-      shareScreen({ videoSource: 'screen' });
+      shareScreen({
+        videoSource: 'screen',
+        scalableScreenshare: true,
+      });
     };
 
     $scope.toggleShareScreenCanvas = () => {

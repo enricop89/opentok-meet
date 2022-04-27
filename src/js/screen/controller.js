@@ -27,6 +27,7 @@ angular.module('opentok-meet').controller(
         },
         publishAudio: false,
         videoSource: 'screen',
+        scalableScreenshare: true,
       };
     },
   ]
