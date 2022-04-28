@@ -67,7 +67,7 @@ module.exports = (app, config, redis, ot) => {
       }
       otSDK.startArchive(sessionId, {
         name: room,
-        resolution: '1280x720',
+        resolution: '1920x1080',
         layout: {
           screenshareType: 'bestfit',
         },
