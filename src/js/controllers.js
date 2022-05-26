@@ -66,6 +66,7 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       resolution: '1280x720',
       frameRate: 30,
       _allowSafariSimulcast: true,
+      publishCaptions: true,
     };
     const facePublisherPropsSD = {
       name: 'face',
@@ -76,6 +77,7 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       },
       enableDtx,
       _allowSafariSimulcast: true,
+      publishCaptions: true,
     };
     $scope.facePublisherProps = facePublisherPropsHD;
 
@@ -161,6 +163,44 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       });
     };
 
+    const startTranscribing = () => {
+      $scope.transcribing = true;
+      const postBody = {
+        sessionId: $scope.session.sessionId,
+        token: $scope.session.token,
+      };
+
+      $http.post(`${baseURL + $scope.room}/startTranscribing`, postBody).then((response) => {
+        if (response.data.error) {
+          $scope.transcribing = false;
+          console.error('Failed to start transcribing', response.data.error);
+        } else {
+          $scope.transcribeId = response.data;
+          console.log(`Transcribe ID: ${$scope.transcribeId}`);
+        }
+      }).catch((response) => {
+        console.error('Failed to start transcribing', response);
+        $scope.transcribing = false;
+      });
+    };
+
+    const stopTranscribing = () => {
+      $scope.transcribing = false;
+      $http.post(`${baseURL + $scope.room}/stopTranscribing`, {
+        captionId: $scope.transcribeId,
+      }).then((response) => {
+        if (response.data.error) {
+          console.error('Failed to stop transcribing', response.data.error);
+          $scope.transcribing = true;
+        } else {
+          $scope.transcribingId = '';
+        }
+      }).catch((response) => {
+        console.error('Failed to stop transcribing', response);
+        $scope.transcribing = true;
+      });
+    };
+
     $scope.reportIssue = () => {
       let url = `mailto:broken@tokbox.com?subject=Meet%20Issue%20Report&body=room: ${$scope.room}  p2p: ${$scope.p2p}`;
       if ($scope.session) {
@@ -186,6 +226,14 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
         stopArchiving();
       } else {
         startArchiving();
+      }
+    };
+
+    $scope.toggleTranscribing = () => {
+      if ($scope.transcribing) {
+        stopTranscribing();
+      } else {
+        startTranscribing();
       }
     };
 

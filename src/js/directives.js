@@ -1,4 +1,5 @@
 require('../css/cycle-camera.css');
+require('../css/toggle-captions.css');
 
 angular.module('opentok-meet').directive('draggable', ['$document', '$window',
   function draggable($document, $window) {
@@ -98,6 +99,11 @@ angular.module('opentok-meet').directive('draggable', ['$document', '$window',
     restrict: 'E',
     template: '<div><i class="audio-icon microphone icon-left ion ion-ios7-mic-off" ' +
       'title="Mute Audio}}"></i></div>',
+  }))
+  .directive('muteCaptions', () => ({
+    restrict: 'E',
+    template: '<div><i class="audio-icon microphone icon-left ion ion-ios7-mic-off" ' +
+      'title="Mute Captions}}"></i></div>',
   }))
   .directive('muteSubscriber', ['OTSession', function muteSubscriber(OTSession) {
     return {

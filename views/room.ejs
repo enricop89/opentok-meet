@@ -73,6 +73,7 @@
                 <mute-video publisher-id="facePublisher" mute-publisher></mute-video>
                 <audio-acquisition-problem publisher-id="facePublisher"></audio-acquisition-problem>
                 <microphone-picker publisher="getPublisher('facePublisher')"></microphone-picker>
+                <toogle-captions publisher="getPublisher('facePublisher')"> </toggle-captions>
                 <filter-picker filter="filter" publisher="getPublisher('facePublisher')"></filter-picker>
                 <cycle-camera publisher-id="facePublisher"></cycle-camera>
             </div>
@@ -109,6 +110,7 @@
             ng-if="reconnecting"
             ng-cloak>
         </reconnecting-overlay>
+        <div id="caption-render-box"> </div>
         <div id="bottomBar">
             <button name="screenshare" id="showscreen" ng-click="toggleShareScreen()" ng-class="{green: !sharingMyScreen, red: sharingMyScreen}" class="screen-btn icon-left ion-monitor" ng-disabled="!screenShareSupported || selectingScreenSource || promptToInstall" ng-if="!isAndroid && screenAvailable" title="Share Screen">Screen</button>
             <button name="screenshareCanvas" id="showscreenCanvas" ng-click="toggleShareScreenCanvas()" ng-class="{green: !sharingMyScreen, red: sharingMyScreen}" class="screen-btn icon-left ion-monitor" ng-disabled="!screenShareSupported || selectingScreenSource || promptToInstall" ng-if="!isAndroid && screenCanvasAvailable" title="Share Screen Canvas">ScreenToCanvas</button>
@@ -131,6 +133,10 @@
             <button type="button" name="archive" id="startArchiveBtn"
                 ng-if="!p2p && connected" ng-class="{green: !archiving, red: archiving}" class="icon-left ion-ios7-recording"
                 ng-click="toggleArchiving()" title="Record">Record</button>
+            
+            <button type="button" name="transcribe" id="startTranscribeBtn"
+                ng-if="!p2p && connected" ng-class="{green: !transcribing, red: transcribing}" class="icon-left ion-ios7-transcribing"
+                ng-click="toggleTranscribing()" title="Transcribe">Transcribe</button>
 
             <button type="button" name="webcomposer" id="webComposerBtn"
                 ng-if="!p2p && connected" ng-class="{green: !webviewComposerId, red: webviewComposerId}" class="icon-left ion-ios7-recording" ng-click="toggleWebcomposing()" title="Webcomposer" ng-disabled="webviewComposerRequestInflight">Webcomposer</button>
@@ -138,6 +144,10 @@
             <button type="button" name="muteCamera" mute-publisher ng-if="publishing" ng-class="{green: mutedVideo, red: !mutedVideo}" publisher-id="facePublisher" class="icon-left ion ion-person">Camera</button>
 
             <button type="button" name="muteMicrophone" muted-type="Audio" ng-if="publishing" mute-publisher ng-class="{green: mutedAudio, red: !mutedAudio, 'ion-ios7-mic-off': mutedAudio, 'ion-ios7-mic': !mutedAudio}" publisher-id="facePublisher" class="icon-left ion">Mic</button>
+
+            <button type="button" name="muteCaptions" muted-type="Captions" ng-if="publishing" mute-publisher ng-class="{green: mutedCaptions, red: !mutedCaptions, 'ion-ios7-mic-off': mutedCaptions, 'ion-ios7-mic': !mutedCaptions}" publisher-id="facePublisher" class="icon-left ion">Captions</button>
+
+            <button type="button" name="muteAll" id="muteAll" ng-click="forceMuteAll()" class="icon-left ion gray" ng-if="isModerator">Mute All</button>
 
             <button type="button" name="muteAll" id="muteAll" ng-click="forceMuteAll()" class="icon-left ion gray" ng-if="isModerator">Mute All</button>
 

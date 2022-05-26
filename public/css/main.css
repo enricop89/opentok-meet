@@ -254,6 +254,17 @@ opentok-textchat #otTextChatMessages {
   z-index: 98;
 }
 
+#caption-render-box {
+    width: 100%;
+    left: 0;
+    bottom: 80px;
+    position: absolute;
+    text-align: center;
+    color: black;
+    background-color: white;
+    font-size: 40px; 
+  }
+
 button.icon-left:before {
     font-family: "Ionicons";
     padding-right: 8px;
