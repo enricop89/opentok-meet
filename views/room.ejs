@@ -110,6 +110,9 @@
             ng-if="reconnecting"
             ng-cloak>
         </reconnecting-overlay>
+        <div id="transcribe-popup" ng-if="unmoddedTranscribe" ng-cloak>
+                Enabling/Disabling session level transcription requires moderator permissions.
+        </div>
         <div id="caption-render-box"> </div>
         <div id="bottomBar">
             <button name="screenshare" id="showscreen" ng-click="toggleShareScreen()" ng-class="{green: !sharingMyScreen, red: sharingMyScreen}" class="screen-btn icon-left ion-monitor" ng-disabled="!screenShareSupported || selectingScreenSource || promptToInstall" ng-if="!isAndroid && screenAvailable" title="Share Screen">Screen</button>
@@ -135,7 +138,7 @@
                 ng-click="toggleArchiving()" title="Record">Record</button>
             
             <button type="button" name="transcribe" id="startTranscribeBtn"
-                ng-if="!p2p && connected" ng-class="{green: !transcribing, red: transcribing}" class="icon-left ion-ios7-transcribing"
+                ng-if="!p2p && connected" ng-class="{green: !transcribing, red: transcribing, gray: !isModerator}" class="icon-left ion-ios7-transcribing"
                 ng-click="toggleTranscribing()" title="Transcribe">Transcribe</button>
 
             <button type="button" name="webcomposer" id="webComposerBtn"

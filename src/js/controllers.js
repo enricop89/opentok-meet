@@ -230,6 +230,15 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
     };
 
     $scope.toggleTranscribing = () => {
+      const transcribeWarningTimeout = 1 * 1000;
+      if (!$scope.isModerator) {
+        $scope.unmoddedTranscribe = true;
+        setTimeout(() => {
+          $scope.unmoddedTranscribe = false;
+        }, transcribeWarningTimeout);
+        return;
+      }
+
       if ($scope.transcribing) {
         stopTranscribing();
       } else {
