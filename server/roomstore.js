@@ -1,6 +1,8 @@
 const OpenTok = require('opentok');
 
-const ROOM_INACTIVITY_TIME_LIMIT = 30 * 60 * 1000; // 30 minutes; minutes x seconds x milliseconds
+const ONE_MINUTE_IN_MS = 60 * 1000;
+const INACTIVITY_TIME_IN_MINS = parseInt(process.env.INACTIVITY_TIME_IN_MINS, 10) || 180;
+const ROOM_INACTIVITY_TIME_LIMIT = INACTIVITY_TIME_IN_MINS * ONE_MINUTE_IN_MS;
 
 module.exports = (redis, ot, config) => {
   const roomStore = {
