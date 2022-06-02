@@ -54,20 +54,6 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       }
     }
 
-    const facePublisherPropsHD = {
-      name: 'face',
-      width: '100%',
-      height: '100%',
-      style: {
-        nameDisplayMode: 'off',
-      },
-      enableDtx,
-      usePreviousDeviceSelection: true,
-      resolution: '1280x720',
-      frameRate: 30,
-      _allowSafariSimulcast: true,
-      publishCaptions: true,
-    };
     const facePublisherPropsSD = {
       name: 'face',
       width: '100%',
@@ -76,21 +62,33 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
         nameDisplayMode: 'off',
       },
       enableDtx,
+      resolution: '640x480',
       _allowSafariSimulcast: true,
       publishCaptions: true,
     };
-    $scope.facePublisherProps = facePublisherPropsHD;
+
+    const facePublisherProps720 = Object.assign({
+      frameRate: 30,
+    }, facePublisherPropsSD);
+    facePublisherProps720.resolution = '1280x720';
+
+    const facePublisherProps1080 = Object.assign({}, facePublisherProps720);
+    facePublisherProps1080.resolution = '1920x1080';
+
+    $scope.facePublisherProps = facePublisherProps720;
 
     $scope.notMine = stream =>
       stream.connection.connectionId !== $scope.session.connection.connectionId;
 
     $scope.getPublisher = id => OTSession.publishers.filter(x => x.id === id)[0];
 
-    $scope.togglePublish = (publishHD) => {
+    $scope.togglePublish = (quality) => {
       if (!$scope.publishing) {
-        // If they unpublish and publish again then prompt them to change their devices
-        facePublisherPropsHD.usePreviousDeviceSelection = false;
-        $scope.facePublisherProps = publishHD ? facePublisherPropsHD : facePublisherPropsSD;
+        let props = facePublisherPropsSD;
+        if (quality) {
+          props = quality === 1080 ? facePublisherProps1080 : facePublisherProps720;
+        }
+        $scope.facePublisherProps = props;
       }
       $scope.publishing = !$scope.publishing;
     };
