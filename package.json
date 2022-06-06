@@ -13,7 +13,7 @@
     "babel-preset-env": "^1.2.1",
     "compression": "^1.6.2",
     "cookie-session": "^1.4.0",
-    "css-loader": "^0.23.1",
+    "css-loader": "^2.0.0",
     "ejs": ">= 0.0.1",
     "express": "3.1.x",
     "filterous": "aullman/filterous-2",
