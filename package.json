@@ -40,7 +40,7 @@
     "redis": "~3.0.0",
     "request": "^2.74.0",
     "style-loader": "^0.13.1",
-    "webpack": "^1.13.0"
+    "webpack": "^5.0.0"
   },
   "engines": {
     "node": "8.x",
