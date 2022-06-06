@@ -91,6 +91,6 @@
   "optionalDependencies": {
     "appdmg": "^0.4.5",
     "electron": "1.4.15",
-    "electron-packager": "^8.5.1"
+    "electron-packager": "^13.0.0"
   }
 }
