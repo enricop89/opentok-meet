@@ -15,7 +15,7 @@
     "cookie-session": "^1.4.0",
     "css-loader": "^0.23.1",
     "ejs": ">= 0.0.1",
-    "express": "3.1.x",
+    "express": "4.16.x",
     "filterous": "aullman/filterous-2",
     "git-revision-webpack-plugin": "^2.4.0",
     "glob": "^5.0.15",
