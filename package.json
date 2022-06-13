@@ -24,7 +24,7 @@
     "jwt-simple": "^0.5.0",
     "ng-debounce": "^1.0.1",
     "opentok": "^2.6.2",
-    "opentok-angular": "https://github.com/michaelwhittemore/opentok-angular.git#multiple-caption-subscribers",
+    "opentok-angular": "https://github.com/albertoacn/opentok-angular.git#multiple-caption-subscribers",
     "opentok-camera-filters": "^2.0.1",
     "opentok-editor": "https://github.com/maikthomas/opentok-editor.git#master",
     "opentok-jwt": "^0.1.4",
