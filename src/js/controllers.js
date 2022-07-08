@@ -42,17 +42,7 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       enableDtx = false;
     }
 
-    const e2eePassphrase = url.searchParams.get('e2ee');
-    if (e2eePassphrase) {
-      if (typeof OT._.initE2EE === 'function') {
-        console.log('Initializing E2E Encryption');
-        OT._.initE2EE({
-          passphrase: e2eePassphrase,
-        });
-      } else {
-        console.log('Tried to initialize E2E Encryption but OT._.initE2EE was not defined');
-      }
-    }
+    const encryptionSecret = url.searchParams.get('e2ee');
 
     const facePublisherPropsSD = {
       name: 'face',
@@ -456,55 +446,60 @@ angular.module('opentok-meet').controller('RoomCtrl', ['$scope', '$http', '$wind
       $scope.shareURL = baseURL === '/' ? $window.location.href : baseURL + roomData.room;
       $scope.isModerator = roomData.role === 'moderator';
 
-      OTSession.init(roomData.apiKey, roomData.sessionId, roomData.token, (err, session) => {
-        if (err) {
-          $scope.$broadcast('otError', { message: err.message });
-          return;
-        }
-        $scope.session = session;
-        const connectDisconnect = (connected) => {
-          $scope.$apply(() => {
-            $scope.connected = connected;
-            $scope.reconnecting = false;
-            if (!connected) {
-              $scope.publishing = false;
+      const sessionOptions = encryptionSecret ? { encryptionSecret } : {};
+
+      OTSession.init(
+        roomData.apiKey, roomData.sessionId, roomData.token, sessionOptions,
+        (err, session) => {
+          if (err) {
+            $scope.$broadcast('otError', { message: err.message });
+            return;
+          }
+          $scope.session = session;
+          const connectDisconnect = (connected) => {
+            $scope.$apply(() => {
+              $scope.connected = connected;
+              $scope.reconnecting = false;
+              if (!connected) {
+                $scope.publishing = false;
+              }
+            });
+          };
+          const reconnecting = (isReconnecting) => {
+            $scope.$apply(() => {
+              $scope.reconnecting = isReconnecting;
+            });
+          };
+          if ((session.is && session.is('connected')) || session.connected) {
+            connectDisconnect(true);
+          }
+          $scope.session.on('sessionConnected', connectDisconnect.bind($scope.session, true));
+          $scope.session.on('sessionDisconnected', connectDisconnect.bind($scope.session, false));
+          $scope.session.on('archiveStarted archiveStopped', (event) => {
+          // event.id is the archiveId
+            $scope.$apply(() => {
+              $scope.archiveId = event.id;
+              $scope.archiving = (event.type === 'archiveStarted');
+            });
+          });
+          SimulcastService.init($scope.streams, $scope.session);
+          $scope.session.on('sessionReconnecting', reconnecting.bind($scope.session, true));
+          $scope.session.on('sessionReconnected', reconnecting.bind($scope.session, false));
+
+          // webview composer signaling
+          $scope.session.on('signal:wvc', (event) => {
+            if ($scope.session.connection && event.from && event.from.connectionId !== $scope.session.connection.id) {
+            // This signal is originated by an user action.
+              handleWVCSessionSignal(event.data);
+            } else {
+            // This signal is coming from the server
+              handleWVCServerSignal(event.data);
             }
           });
-        };
-        const reconnecting = (isReconnecting) => {
-          $scope.$apply(() => {
-            $scope.reconnecting = isReconnecting;
-          });
-        };
-        if ((session.is && session.is('connected')) || session.connected) {
-          connectDisconnect(true);
+
+          queryRender();
         }
-        $scope.session.on('sessionConnected', connectDisconnect.bind($scope.session, true));
-        $scope.session.on('sessionDisconnected', connectDisconnect.bind($scope.session, false));
-        $scope.session.on('archiveStarted archiveStopped', (event) => {
-          // event.id is the archiveId
-          $scope.$apply(() => {
-            $scope.archiveId = event.id;
-            $scope.archiving = (event.type === 'archiveStarted');
-          });
-        });
-        SimulcastService.init($scope.streams, $scope.session);
-        $scope.session.on('sessionReconnecting', reconnecting.bind($scope.session, true));
-        $scope.session.on('sessionReconnected', reconnecting.bind($scope.session, false));
-
-        // webview composer signalling
-        $scope.session.on('signal:wvc', (event) => {
-          if ($scope.session.connection && event.from && event.from.connectionId !== $scope.session.connection.id) {
-            // This signal is originated by an user action.
-            handleWVCSessionSignal(event.data);
-          } else {
-            // This signal is coming from the server
-            handleWVCServerSignal(event.data);
-          }
-        });
-
-        queryRender();
-      });
+      );
 
       const whiteboardUpdated = () => {
         if (!$scope.showWhiteboard && !$scope.whiteboardUnread) {

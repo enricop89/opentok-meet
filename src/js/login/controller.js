@@ -1,4 +1,5 @@
 const isValidTokenRole = require('../isValidTokenRole');
+const appendQueryParamToUrl = require('../append-query-param-to-url');
 
 const isp2p = room => room && room.toLowerCase().indexOf('p2p') > -1;
 
@@ -10,7 +11,7 @@ angular.module('opentok-meet-login', [])
     $scope.advanced = false;
     $scope.dtx = true;
     $scope.e2ee = false;
-    $scope.e2eePassphrase = '';
+    $scope.encryptionSecret = '';
     $scope.joinRoom = () => {
       const location = new URL($window.location.href);
       let url = `${location.origin}/${encodeURIComponent($scope.room)}`;
@@ -19,25 +20,20 @@ angular.module('opentok-meet-login', [])
         url += `/${$scope.roomType}`;
       }
 
-      const appendQueryParamToUrl = (queryString) => {
-        const precursor = url.includes('?') ? '&' : '?';
-        url += precursor + queryString;
-      }
-
       if (!isValidTokenRole($scope.tokenRole)) {
         $scope.tokenRole = 'moderator';
       }
 
       if ($scope.tokenRole) {
-        appendQueryParamToUrl(`tokenRole=${$scope.tokenRole}`);
+        url = appendQueryParamToUrl(`tokenRole=${$scope.tokenRole}`, url);
       }
 
       if (!$scope.dtx) {
-        appendQueryParamToUrl('dtx=false');
+        url = appendQueryParamToUrl('dtx=false', url);
       }
 
-      if ($scope.e2ee && $scope.e2eePassphrase) {
-        appendQueryParamToUrl(`e2ee=${$scope.e2eePassphrase}`);
+      if ($scope.e2ee && $scope.encryptionSecret) {
+        url = appendQueryParamToUrl(`e2ee=${$scope.encryptionSecret}`, url);
       }
 
       $window.location.href = url;

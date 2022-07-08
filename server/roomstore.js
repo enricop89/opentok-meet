@@ -38,6 +38,9 @@ module.exports = (redis, ot, config) => {
           if (roomStore.isP2P(room)) {
             props.mediaMode = 'relayed';
           }
+          if (req.query.e2ee) {
+            props.e2ee = true;
+          }
           let otSDK = ot;
           // If there's a custom apiKey and secret use that
           if (apiKey && secret) {

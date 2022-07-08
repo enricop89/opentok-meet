@@ -63,7 +63,7 @@ module.exports = (app, config, redis, ot, redirectSSL) => {
     const room = req.param('room');
     const apiKey = req.param('apiKey');
     const secret = req.param('secret');
-    let { tokenRole } = req.query;
+    const { tokenRole } = req.query;
 
     const role = isValidTokenRole(tokenRole) ? tokenRole : 'publisher';
 
