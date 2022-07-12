@@ -1,13 +1,19 @@
+/* eslint-disable global-require */
+
 const filterPickerHTML = require('../templates/filter-picker.html');
 require('../css/filter-picker.css');
 const filterous = require('filterous/lib/instaFilters');
 const filterousFilters = require('./filterous-filters');
+const backgroundImages = require('./backgroundImages');
 
 function FilterPickerDirective() {
   function link(scope, element) {
     let currentPublisher;
     scope.showFilterList = false;
-    const nativePublisherFilters = ['BG Blur: Low', 'BG Blur: High'];
+    const nativePublisherFilters = [
+      'BG Blur: Low', 'BG Blur: High', 'BG: Enterprise Bridge', 'BG: Beach', 'BG: Simpsons',
+      'BG: Mountains', 'BG: Podium', "BG: Ryu's Stage",
+    ];
     scope.filters = ['none', ...nativePublisherFilters, ...filterousFilters];
     scope.filterImages = null;
 
@@ -41,6 +47,11 @@ function FilterPickerDirective() {
                   const tmpCtx = tmpCanvas.getContext('2d');
                   tmpCtx.putImageData(filteredImgData, 0, 0);
                   scope.filterImages[filter] = `${tmpCanvas.toDataURL('image/png')}`;
+                } else if (/^BG: [\s-\S]*/.test(filter)) {
+                  const [, image] = filter.match(/^BG: (.+)$/);
+                  const filename = backgroundImages[image];
+                  const backgroundImgUrl = `/images/${filename}`;
+                  scope.filterImages[filter] = backgroundImgUrl;
                 } else {
                   scope.filterImages[filter] = `${canvas.toDataURL('image/png')}`;
                 }
@@ -52,12 +63,40 @@ function FilterPickerDirective() {
       });
     };
 
+    const getNativeFilterConfig = (filter) => {
+      const nativeFilters = [
+        {
+          regex: /^BG Blur/,
+          config: () => ({
+            type: 'backgroundBlur',
+            blurStrength: filter === 'BG Blur: Low' ? 'low' : 'high',
+          }),
+        },
+        {
+          regex: /^BG:/,
+          config: () => {
+            const [, image] = filter.match(/^BG: (.+)$/);
+            const filename = backgroundImages[image];
+            const backgroundImgUrl = `/images/${filename}`;
+
+            return {
+              type: 'backgroundReplacement',
+              backgroundImgUrl,
+            };
+          },
+        },
+      ];
+
+      const nativeFilter = nativeFilters.find(nf => nf.regex.test(filter));
+
+      return nativeFilter ? nativeFilter.config() : null;
+    };
+
     const applyNativeFilter = (filter) => {
       try {
-        currentPublisher.applyVideoFilter({
-          type: 'backgroundBlur',
-          blurStrength: filter === 'BG Blur: Low' ? 'low' : 'high',
-        });
+        const config = getNativeFilterConfig(filter);
+
+        currentPublisher.applyVideoFilter(config);
       } catch (e) {
         console.log(e);
       }

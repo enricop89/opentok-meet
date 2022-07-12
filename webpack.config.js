@@ -35,7 +35,10 @@ const config = {
     loaders: [
       { test: /\.css$/, loader: 'style!css' },
       { test: /\.html$/, loader: 'raw' },
-      // { test: /codemirror\/mode(?!.*(javascript|markdown)).*/, loader: 'null' }
+      {
+        test: /\.(?:jpeg|jpg|png|gif|bmp)$/i,
+        loader: 'file-loader?name=/images/[name].[ext]',
+      },
     ],
   },
   resolveLoader: {
